@@ -465,12 +465,11 @@ def empirical_nngp_fn(f: ApplyFn,
   return nngp_fn
 
 
-def empirical_ntk_fn(f: ApplyFn,
+def empirical_ntk_fn(mask, f: ApplyFn,
                      trace_axes: Axes = (-1,),
                      diagonal_axes: Axes = (),
                      vmap_axes: VMapAxes = None,
                      implementation: int = 1,
-                     mask
                      ) -> Callable[[NTTree[np.ndarray],
                                     Optional[NTTree[np.ndarray]],
                                     PyTree],
@@ -590,7 +589,7 @@ def empirical_ntk_fn(f: ApplyFn,
                 vmap_axes=vmap_axes)
 
   if implementation == 1:
-    return _empirical_direct_ntk_fn(**kwargs, mask)
+    return _empirical_direct_ntk_fn(mask, **kwargs)
 
   if implementation == 2:
     return _empirical_implicit_ntk_fn(**kwargs)
@@ -687,11 +686,10 @@ def _empirical_implicit_ntk_fn(f: ApplyFn,
   return ntk_fn
 
 
-def _empirical_direct_ntk_fn(f: ApplyFn,
+def _empirical_direct_ntk_fn(mask, f: ApplyFn,
                              trace_axes: Axes = (-1,),
                              diagonal_axes: Axes = (),
-                             vmap_axes: VMapAxes = None,
-                             mask
+                             vmap_axes: VMapAxes = None
                              ) -> Callable[[NTTree[np.ndarray],
                                             Optional[NTTree[np.ndarray]],
                                             PyTree],

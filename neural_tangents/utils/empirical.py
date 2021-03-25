@@ -469,7 +469,8 @@ def empirical_ntk_fn(f: ApplyFn,
                      trace_axes: Axes = (-1,),
                      diagonal_axes: Axes = (),
                      vmap_axes: VMapAxes = None,
-                     implementation: int = 1
+                     implementation: int = 1,
+                     mask
                      ) -> Callable[[NTTree[np.ndarray],
                                     Optional[NTTree[np.ndarray]],
                                     PyTree],
@@ -589,7 +590,7 @@ def empirical_ntk_fn(f: ApplyFn,
                 vmap_axes=vmap_axes)
 
   if implementation == 1:
-    return _empirical_direct_ntk_fn(**kwargs)
+    return _empirical_direct_ntk_fn(**kwargs, mask)
 
   if implementation == 2:
     return _empirical_implicit_ntk_fn(**kwargs)
@@ -689,7 +690,8 @@ def _empirical_implicit_ntk_fn(f: ApplyFn,
 def _empirical_direct_ntk_fn(f: ApplyFn,
                              trace_axes: Axes = (-1,),
                              diagonal_axes: Axes = (),
-                             vmap_axes: VMapAxes = None
+                             vmap_axes: VMapAxes = None,
+                             mask
                              ) -> Callable[[NTTree[np.ndarray],
                                             Optional[NTTree[np.ndarray]],
                                             PyTree],
@@ -761,6 +763,7 @@ def _empirical_direct_ntk_fn(f: ApplyFn,
     j1 = j_fn(x1, *args1)
     j2 = j_fn(x2, *args2) if not utils.all_none(x2) else j1
     ntk = sum_and_contract(fx1, j1, j2)
+    print(mask)
     return ntk
 
   return ntk_fn

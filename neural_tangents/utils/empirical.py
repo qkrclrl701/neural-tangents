@@ -761,6 +761,9 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
     j1 = j_fn(x1, *args1)
     j2 = j_fn(x2, *args2) if not utils.all_none(x2) else j1
     print(fx1)
+    for i in range(len(j1)): # i is for data(x)
+      for j in range(len(j1[i])): # j is for each output(10 outputs)
+        print(j1[i][j])
     print(j1)
     print(j2)
     ntk = sum_and_contract(fx1, j1, j2)

@@ -765,18 +765,23 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
       step = 0
       for i in range(len(j1)): # i is for each layer
         if(len(j1[i]) > 0):
+          j1_i_first = j1[i][0]
           for j in range(len(j1[i][0])): # j is for each data (60 data)
             for k in range(len(j1[i][0][j])): # k is for each output neuron(10 outputs)
-                j1[i] = (index_update(j1[i][0], index[j, k], j1[i][0][j][k] * mask[step]), j1[i][1])
+                j1_i_first = index_update(j1_i_first, index[j, k], j1[i][0][j][k] * mask[step])
                 # j1[i] = index_update(j1, index[i, 0, j, k], j1[i][0][j][k] * mask[step])
+          j1[i] = (j1_i_first, j1[i][1])
           step = step + 1
       if(not utils.all_none(x2)):      
         step = 0
         for i in range(len(j2)): # i is for each layer
           if(len(j2[i]) > 0):
+            j2_i_first = j2[i][0]
             for j in range(len(j2[i][0])): # j is for each data (60 data)
               for k in range(len(j2[i][0][j])): # k is for each output neuron(10 outputs)
-                j2[i] = (index_update(j2[i][0], index[j, k], j2[i][0][j][k] * mask[step]), j1[i][1])
+                  j2_i_first = index_update(j2_i_first, index[j, k], j2[i][0][j][k] * mask[step])
+                  # j1[i] = index_update(j1, index[i, 0, j, k], j1[i][0][j][k] * mask[step])
+            j2[i] = (j2_i_first, j2[i][1])
             step = step + 1
       else:
         j2 = j1

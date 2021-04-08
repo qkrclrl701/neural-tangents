@@ -91,7 +91,7 @@ Example:
 import operator
 from typing import Union, Callable, Optional, Tuple, Dict
 from jax.api import eval_shape, jacobian, jvp, vjp, vmap, _std_basis, _unravel_array_into_pytree, linear_transpose
-from jax.ops import index_update
+from jax.ops import index_update, index
 import jax.numpy as np
 from jax.tree_util import tree_flatten, tree_unflatten, tree_multimap, tree_reduce, tree_map
 from neural_tangents.utils import utils
@@ -767,7 +767,8 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
         if(len(j1[i]) > 0):
           for j in range(len(j1[i][0])): # j is for each data (60 data)
             for k in range(len(j1[i][0][j])): # k is for each output neuron(10 outputs)
-                j1 = index_update(j1[i][0][j], k, j1[i][0][j][k] * mask[step])
+                j1[i] = (index_update(j1[i][0], index[j, k], j1[i][0][j][k] * mask[step]), j2[i][1])
+                # j1[i] = index_update(j1, index[i, 0, j, k], j1[i][0][j][k] * mask[step])
           step = step + 1
       if(not utils.all_none(x2)):      
         step = 0
@@ -775,7 +776,7 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
           if(len(j2[i]) > 0):
             for j in range(len(j2[i][0])): # j is for each data (60 data)
               for k in range(len(j2[i][0][j])): # k is for each output neuron(10 outputs)
-                  j2 = index_update(j2[i][0][j], k, j2[i][0][j][k] * mask[step])
+                j2[i] = (index_update(j2[i][0], index[j, k], j2[i][0][j][k] * mask[step]), j2[i][1])
             step = step + 1
       else:
         j2 = j1

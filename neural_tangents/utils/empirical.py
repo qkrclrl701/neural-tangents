@@ -91,6 +91,7 @@ Example:
 import operator
 from typing import Union, Callable, Optional, Tuple, Dict
 from jax.api import eval_shape, jacobian, jvp, vjp, vmap, _std_basis, _unravel_array_into_pytree, linear_transpose
+from jax.ops import index_update
 import jax.numpy as np
 from jax.tree_util import tree_flatten, tree_unflatten, tree_multimap, tree_reduce, tree_map
 from neural_tangents.utils import utils
@@ -766,13 +767,13 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
         if(len(j1[i]) > 0):
           for j in range(len(j1[i][0])): # j is for each data (60 data)
             for k in range(len(j1[i][0][j])): # k is for each output neuron(10 outputs)
-                jax.ops.index_update(j1[i][0][j], k, j1[i][0][j][k] * mask[step])
+                index_update(j1[i][0][j], k, j1[i][0][j][k] * mask[step])
           step = step + 1      
       for i in range(len(j2)): # i is for each layer
         if(len(j2[i]) > 0):
           for j in range(len(j2[i][0])): # j is for each data (60 data)
             for k in range(len(j2[i][0][j])): # k is for each output neuron(10 outputs)
-                jax.ops.index_update(j2[i][0][j], k, j2[i][0][j][k] * mask[step])
+                index_update(j2[i][0][j], k, j2[i][0][j][k] * mask[step])
           step = step + 1      
     ntk = sum_and_contract(fx1, j1, j2)
     return ntk

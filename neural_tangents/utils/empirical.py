@@ -465,7 +465,7 @@ def empirical_nngp_fn(f: ApplyFn,
   return nngp_fn
 
 
-def empirical_ntk_fn(mask = None, f: ApplyFn,
+def empirical_ntk_fn(mask, f: ApplyFn,
                      trace_axes: Axes = (-1,),
                      diagonal_axes: Axes = (),
                      vmap_axes: VMapAxes = None,

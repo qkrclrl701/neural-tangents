@@ -769,6 +769,7 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
             for k in range(len(j1[i][0][j])): # k is for each output neuron(10 outputs)
                 index_update(j1[i][0][j], k, j1[i][0][j][k] * mask[step])
           step = step + 1      
+      step = 0
       for i in range(len(j2)): # i is for each layer
         if(len(j2[i]) > 0):
           for j in range(len(j2[i][0])): # j is for each data (60 data)

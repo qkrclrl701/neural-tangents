@@ -96,7 +96,7 @@ import jax.numpy as np
 from jax.tree_util import tree_flatten, tree_unflatten, tree_multimap, tree_reduce, tree_map
 from neural_tangents.utils import utils
 from neural_tangents.utils.typing import ApplyFn, EmpiricalKernelFn, NTTree, PyTree, Axes, VMapAxes
-
+import gc
 
 def linearize(f: Callable[..., PyTree],
               params: PyTree) -> Callable[..., PyTree]:
@@ -772,6 +772,7 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
                 # j1[i] = index_update(j1, index[i, 0, j, k], j1[i][0][j][k] * mask[step])
           j1[i] = (j1_i_first, j1[i][1])
           step = step + 1
+        gc.collect()
       if(not utils.all_none(x2)):      
         step = 0
         for i in range(len(j2)): # i is for each layer
@@ -783,6 +784,7 @@ def _empirical_direct_ntk_fn(mask, f: ApplyFn,
                   # j1[i] = index_update(j1, index[i, 0, j, k], j1[i][0][j][k] * mask[step])
             j2[i] = (j2_i_first, j2[i][1])
             step = step + 1
+          gc.collect()
       else:
         j2 = j1
     ntk = sum_and_contract(fx1, j1, j2)
